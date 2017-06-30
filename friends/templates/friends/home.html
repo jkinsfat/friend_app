@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>My Friends</title>
+    </head>
+    <body>
+        <div>
+            <h1>Welcome {{user_name}}!</h1>
+            <a href="{% url 'auth:logout' %}">Logout</a>
+        </div>
+        {% if are_friends %}
+            <h2>Here is the list of your friends:</h2>
+            <table>
+                <thead>
+                    <th>Alias</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                    {% for friend in my_friends %}
+                    <!-- for each friend of steves -->
+                    <tr>
+                        <td>{{friend.alias}}</td>
+                        <td>
+                            <a href="/friends/user/{{friend.id}}">View Profile</a>
+                            <a href="/friends/remove/{{friend.id}}">Remove as Friend</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h2>You don't have friends yet. :'(</h2>
+        {% endif %}
+        <h2>Other Users not on your friend's list:</h2>
+        <table>
+            <thead>
+                <th>Alias</th>
+                <th>Action</th>
+            </thead>
+            <tbody>
+                {% for person in others %}
+                <tr>
+                    <td><a href="/friends/user/{{person.id}}">{{person.alias}}</a></td>
+                    <td>
+                        <form action="{% url 'friends:add' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="friend_id" value="{{person.id}}">
+                            <input type="submit" name="submit" value="Add as a Friend">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
